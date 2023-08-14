@@ -186,16 +186,5 @@ def download_model_gdown(model_name, model_key, model_path="checkpoints"):
     gdown.download(MODEL_GDRIVE_URLS[model_name][model_key], output=os.path.join(model_path, model_key), fuzzy=True, use_cookies=False)
 
 if __name__ == "__main__":
-#    download_model_gdown("screenclassification", "screenclassification-resnet-noisystudent+web350k.ckpt")
-#    download_enrico()
-#    download_dataset_gdown("webui-7k-balanced")
-#    download_dataset_gdown("webui-7k")
-#    download_metadata_gdown("screenclassification")
-#    download_vins()
-#    download_metadata_gdown("screenrecognition")
-#    download_boxes_gdown()
-#    download_dataset_gdown("webui-val")
-#    download_dataset_gdown("webui-test")
-#    download_model_gdown("screenrecognition", "screenrecognition-web7k.ckpt")
-#    download_metadata_gdown("screensim")
-    download_rico()
+    download_model_gdown("screenrecognition", "screenrecognition-web350k-vins.ckpt")
+    download_metadata_gdown("screenrecognition")
