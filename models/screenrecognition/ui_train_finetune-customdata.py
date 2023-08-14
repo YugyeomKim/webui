@@ -23,6 +23,7 @@ if __name__ == "__main__":
         class_map = json.load(f)
     FINETUNE_CLASSES = len(class_map["idx2Label"])
     print("FINETUNE_CLASSES: " + str(FINETUNE_CLASSES))
+    
     logger = TensorBoardLogger(ARTIFACT_DIR)
     
     data = VINSUIDataModule()
