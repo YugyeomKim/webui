@@ -18,17 +18,17 @@ if __name__ == "__main__":
     from pytorch_lightning.loggers import TensorBoardLogger
     import json
 
-    CLASS_MAP_FILE = "../../downloads/metadata/screenrecognition/custom_class_map.json"
+    CLASS_MAP_FILE = "../../metadata/screenrecognition/custom_class_map.json"
     with open(CLASS_MAP_FILE, "r") as f:
         class_map = json.load(f)
-    FINETUNE_CLASSES = len(class_map["idx2Label"])
+    FINETUNE_CLASSES = len(class_map["idx2Label"]) + 1
     print("FINETUNE_CLASSES: " + str(FINETUNE_CLASSES))
-    
+
     logger = TensorBoardLogger(ARTIFACT_DIR)
     
-    data = VINSUIDataModule()
+    data = CustomDataModule()
 
-    model = UIElementDetector.load_from_checkpoint('../../downloads/checkpoints/screenrecognition-web7k.ckpt', val_weights=None, lr=0.01)
+    model = UIElementDetector.load_from_checkpoint('../../downloads/checkpoints/screenrecognition-web7k-vins.ckpt', val_weights=None, lr=0.01)
     model.hparams.num_classes = FINETUNE_CLASSES
 
     mod = model.model.head.classification_head

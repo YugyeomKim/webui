@@ -26,7 +26,8 @@ DEVICE_SCALE = {
     "iPad-Mini": 2,
     "iPad-Pro": 2,
     "iPhone-13 Pro": 3,
-    "iPhone-SE": 3
+    "iPhone-SE": 3,
+    "mobile": 1
 }
 
 def makeMultiHotVec(idxs, num_classes):
@@ -614,6 +615,126 @@ class WebUIDataModule(pl.LightningDataModule):
         self.train_dataset = WebUIDataset(split_file = train_split_file)
         self.val_dataset = WebUIDataset(split_file = val_split_file)
         self.test_dataset = WebUIDataset(split_file = test_split_file)
+
+    def train_dataloader(self):
+        return torch.utils.data.DataLoader(self.train_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True)
+
+    def val_dataloader(self):
+        return torch.utils.data.DataLoader(self.val_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True) # shuffle so that we can eval on subset
+
+    def test_dataloader(self):
+        return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size)
+
+class CustomDataset(torch.utils.data.Dataset):
+    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=20, device_scale=DEVICE_SCALE, max_boxes=100, max_skip_boxes=100):
+        super(CustomDataset, self).__init__()
+        self.max_boxes = max_boxes
+        self.max_skip_boxes = max_skip_boxes
+        self.keys = []
+        
+        with open(split_file, "r") as f:
+            boxes_split = json.load(f)
+        
+        rawdata_directory = rawdata_screenshots_dir
+        for folder in [f for f in os.listdir(boxes_dir) if f in boxes_split]:
+            for file in os.listdir(os.path.join(boxes_dir,folder)):
+                if os.path.exists(os.path.join(rawdata_directory, folder, file.replace('.json','-screenshot.png'))):
+                    self.keys.append(os.path.join(boxes_dir, folder, file))
+        
+        self.min_area = min_area
+        self.device_scale = device_scale
+        with open(class_map_file, "r") as f:
+            class_map = json.load(f)
+        self.computed_boxes_directory = boxes_dir
+        self.rawdata_directory = rawdata_directory
+        self.idx2Label = class_map['idx2Label']
+        self.label2Idx = class_map['label2Idx']
+        self.num_classes = max([int(k) for k in self.idx2Label.keys()]) + 1
+        self.img_transforms = transforms.ToTensor()
+        
+
+    def __len__(self):
+        return len(self.keys)
+
+    def __getitem__(self, idx):
+        try:
+            idx = idx % len(self.keys)
+            key = self.keys[idx]
+            with open(key, "r") as f:
+                key_dict = json.load(f)
+
+            img_path = key.replace(".json", "-screenshot.png")
+            img_path = img_path.replace(self.computed_boxes_directory, self.rawdata_directory)
+
+            key_filename = img_path.split("/")[-1]
+            device_name = "-".join(key_filename.split("-")[:-1])
+            
+            
+            img_pil = Image.open(img_path).convert("RGB")
+            img = self.img_transforms(img_pil)
+            target = {}
+            boxes = []
+            labels = []
+            scale = self.device_scale[device_name.split("_")[0]]
+            
+            inds = list(range(len(key_dict['labels'])))
+            random.shuffle(inds)
+            
+            for i in inds:
+                box = key_dict['contentBoxes'][i]
+                box[0] *= scale
+                box[1] *= scale
+                box[2] *= scale
+                box[3] *= scale
+                
+                box[0] = min(max(0, box[0]), img_pil.size[0])
+                box[1] = min(max(0, box[1]), img_pil.size[1])
+                box[2] = min(max(0, box[2]), img_pil.size[0])
+                box[3] = min(max(0, box[3]), img_pil.size[1])
+                
+                # skip invalid boxes
+                if box[0] < 0 or box[1] < 0 or box[2] < 0 or box[3] < 0:
+                    continue
+                if box[3] <= box[1] or box[2] <= box[0]:
+                    continue
+                if (box[3] - box[1]) * (box[2] - box[0]) <= self.min_area: # get rid of really small elements
+                    continue
+                boxes.append(box)
+                label = key_dict['labels'][i]
+                labelIdx = [self.label2Idx[label[li]] if label[li] in self.label2Idx else self.label2Idx['OTHER'] for li in range(len(label))]
+                labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
+                labels.append(labelHot)
+
+            if len(boxes) > self.max_skip_boxes:
+                print("skipped due to too many objects", len(boxes))
+                return self.__getitem__(idx + 1)
+
+            boxes = torch.tensor(boxes, dtype=torch.float)
+
+            labels = torch.tensor(labels, dtype=torch.long)
+
+            target['boxes'] = boxes if len(boxes.shape) == 2 else torch.zeros(0, 4)
+            target['labels'] = labels
+            target['image_id'] = torch.tensor([idx])
+            target['area'] = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0]) if len(boxes.shape) == 2 else torch.zeros(0)
+            target['iscrowd'] = torch.zeros((boxes.shape[0],), dtype=torch.long) if len(boxes.shape) == 2 else torch.zeros(0, dtype=torch.long)
+            
+            for k in target:
+                target[k] = target[k][:self.max_boxes]
+
+            return img, target # return image and target dict
+        except Exception as e:
+            print("failed", idx, str(e))
+            return self.__getitem__(idx + 1)
+
+class CustomDataModule(pl.LightningDataModule):
+    def __init__(self, train_split_file="../../downloads/train_split_custom.json", val_split_file="../../downloads/val_split_custom.json", test_split_file="../../downloads/test_split_custom.json", batch_size=8, num_workers=4):
+        super(CustomDataModule, self).__init__()
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.train_dataset = CustomDataset(split_file = train_split_file)
+        self.val_dataset = CustomDataset(split_file = val_split_file)
+        self.test_dataset = CustomDataset(split_file = test_split_file)
 
     def train_dataloader(self):
         return torch.utils.data.DataLoader(self.train_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True)
