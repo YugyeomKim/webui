@@ -2,7 +2,7 @@ if __name__ == "__main__":
 
     CHECK_INTERVAL_STEPS = 4000
 
-    ARTIFACT_DIR = "./checkpoints_screenrecognition_web7k-vins"
+    ARTIFACT_DIR = "./checkpoints_screenrecognition_web350k-vins-customdata"
 
     import os
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     data = CustomDataModule()
 
-    model = UIElementDetector.load_from_checkpoint('../../downloads/checkpoints/screenrecognition-web7k-vins.ckpt', val_weights=None, lr=0.01)
+    model = UIElementDetector.load_from_checkpoint('../../downloads/checkpoints/screenrecognition-web350k-vins.ckpt', val_weights=None, lr=0.01)
     model.hparams.num_classes = FINETUNE_CLASSES
 
     mod = model.model.head.classification_head
