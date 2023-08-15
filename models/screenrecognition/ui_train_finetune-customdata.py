@@ -47,7 +47,7 @@ if __name__ == "__main__":
     earlystopping_callback = EarlyStopping(monitor="mAP", mode="max", patience=10)
 
     trainer = Trainer(
-        gpus=1,
+        # gpus=1,
         gradient_clip_val=1.0,
         accumulate_grad_batches=2,
         callbacks=[checkpoint_callback, checkpoint_callback2, earlystopping_callback],
