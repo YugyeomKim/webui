@@ -637,9 +637,11 @@ class CustomDataset(torch.utils.data.Dataset):
         
         rawdata_directory = rawdata_screenshots_dir
         for folder in [f for f in os.listdir(boxes_dir) if f in boxes_split]:
-            for file in os.listdir(os.path.join(boxes_dir,folder)):
-                if os.path.exists(os.path.join(rawdata_directory, folder, file.replace('.json','-screenshot.png'))):
-                    self.keys.append(os.path.join(boxes_dir, folder, file))
+            if os.path.exists(os.path.join(boxes_dir, folder, 'mobile.json')) and os.path.exists(os.path.join(rawdata_directory, folder, 'mobile-screenshot.png')):
+                self.keys.append(os.path.join(boxes_dir, folder, 'mobile.json'))
+            # for file in os.listdir(os.path.join(boxes_dir,folder)):
+            #     if os.path.exists(os.path.join(rawdata_directory, folder, file.replace('.json','-screenshot.png'))):
+            #         self.keys.append(os.path.join(boxes_dir, folder, file))
         
         self.min_area = min_area
         self.device_scale = device_scale
@@ -728,7 +730,7 @@ class CustomDataset(torch.utils.data.Dataset):
             return self.__getitem__(idx + 1)
 
 class CustomDataModule(pl.LightningDataModule):
-    def __init__(self, train_split_file="../../downloads/train_split_custom.json", val_split_file="../../downloads/val_split_custom.json", test_split_file="../../downloads/test_split_custom.json", batch_size=8, num_workers=4):
+    def __init__(self, train_split_file="../../downloads/train_split_custom.json", val_split_file="../../downloads/val_split_custom.json", test_split_file="../../downloads/test_split_custom.json", batch_size=8, num_workers=2):
         super(CustomDataModule, self).__init__()
         self.batch_size = batch_size
         self.num_workers = num_workers
