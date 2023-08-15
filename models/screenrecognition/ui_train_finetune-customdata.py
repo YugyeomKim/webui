@@ -21,7 +21,7 @@ if __name__ == "__main__":
     CLASS_MAP_FILE = "../../metadata/screenrecognition/custom_class_map.json"
     with open(CLASS_MAP_FILE, "r") as f:
         class_map = json.load(f)
-    FINETUNE_CLASSES = len(class_map["idx2Label"]) + 1
+    FINETUNE_CLASSES = len(class_map["idx2Label"])
     print("FINETUNE_CLASSES: " + str(FINETUNE_CLASSES))
 
     logger = TensorBoardLogger(ARTIFACT_DIR)
