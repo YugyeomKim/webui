@@ -54,6 +54,7 @@ if __name__ == "__main__":
         accumulate_grad_batches=2,
         callbacks=[checkpoint_callback, checkpoint_callback2, earlystopping_callback],
         min_epochs=10,
+        max_epochs=-1,
         logger=logger
     )
     
