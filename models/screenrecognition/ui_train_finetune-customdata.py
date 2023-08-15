@@ -48,6 +48,8 @@ if __name__ == "__main__":
 
     trainer = Trainer(
         # gpus=1,
+        accelerator="gpu",
+        devices=1,
         gradient_clip_val=1.0,
         accumulate_grad_batches=2,
         callbacks=[checkpoint_callback, checkpoint_callback2, earlystopping_callback],
