@@ -737,7 +737,7 @@ class CustomDataModule(pl.LightningDataModule):
         self.train_dataset = CustomDataset(split_file = train_split_file)
         self.val_dataset = CustomDataset(split_file = val_split_file)
         self.test_dataset = CustomDataset(split_file = test_split_file)
-        print(self.val_dataset.__len__())
+        print("hi! ", self.val_dataset.__len__())
     def train_dataloader(self):
         return torch.utils.data.DataLoader(self.train_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True)
 
