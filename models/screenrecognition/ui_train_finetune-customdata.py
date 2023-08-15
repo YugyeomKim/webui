@@ -17,6 +17,9 @@ if __name__ == "__main__":
     import datetime
     from pytorch_lightning.loggers import TensorBoardLogger
     import json
+    
+    import warnings
+    warnings.simplefilter(action='ignore', category=FutureWarning) # FutureWarning 제거
 
     CLASS_MAP_FILE = "../../metadata/screenrecognition/custom_class_map.json"
     with open(CLASS_MAP_FILE, "r") as f:
