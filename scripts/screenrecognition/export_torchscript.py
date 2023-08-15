@@ -11,7 +11,7 @@ for checkpoint in tqdm(checkpoints):
     m = UIElementDetector.load_from_checkpoint(checkpoint).eval()
     s = torch.jit.script(m.model, torch.rand(1, 3, 256, 256))
 
-    test_input = [torch.rand(3, 384, 512).to('cuda')]
+    test_input = [torch.rand(3, 384, 512)]
     o1 = m.model(test_input)
     o2 = s(test_input)
 
