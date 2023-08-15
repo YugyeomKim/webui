@@ -634,7 +634,7 @@ class CustomDataset(torch.utils.data.Dataset):
         
         with open(split_file, "r") as f:
             boxes_split = json.load(f)
-        
+
         rawdata_directory = rawdata_screenshots_dir
         for folder in [f for f in os.listdir(boxes_dir) if f in boxes_split]:
             if os.path.exists(os.path.join(boxes_dir, folder, 'mobile.json')) and os.path.exists(os.path.join(rawdata_directory, folder, 'mobile-screenshot.png')):
@@ -642,7 +642,7 @@ class CustomDataset(torch.utils.data.Dataset):
             # for file in os.listdir(os.path.join(boxes_dir,folder)):
             #     if os.path.exists(os.path.join(rawdata_directory, folder, file.replace('.json','-screenshot.png'))):
             #         self.keys.append(os.path.join(boxes_dir, folder, file))
-        
+
         self.min_area = min_area
         self.device_scale = device_scale
         with open(class_map_file, "r") as f:
@@ -735,11 +735,12 @@ class CustomDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.train_dataset = CustomDataset(split_file = train_split_file)
+        print("Hi! train_dataset length:", self.train_dataset.__len__())
         self.val_dataset = CustomDataset(split_file = val_split_file)
+        print("Hi! val_dataset length:", self.val_dataset.__len__())
         self.test_dataset = CustomDataset(split_file = test_split_file)
-        print("hi! ", self.train_dataset.__len__())
-        print("hi! ", self.val_dataset.__len__())
-        print("hi! ", self.test_dataset.__len__())
+        print("Hi! test_dataset length:", self.test_dataset.__len__())
+
     def train_dataloader(self):
         return torch.utils.data.DataLoader(self.train_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True)
 
