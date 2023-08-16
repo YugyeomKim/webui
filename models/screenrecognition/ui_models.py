@@ -79,15 +79,19 @@ class UIElementDetector(pl.LightningModule):
             
         metrics = metric_fn.value(iou_thresholds=0.5)
         print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
-        
+        print('weights:', weights)
+        print('test_weights:', self.hparams.test_weights)
+
         if self.hparams.val_weights is None:
+            print('no test_weights')
             mapscore = metrics['mAP']
         else:
             weights = np.array(self.hparams.val_weights)
+            print('test_weights yes!', weights)
             # weights = weights[1:]
          
             aps = np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]])  
-
+            print('mapscore: aps->', aps, ', weights->', weights)
             mapscore = (aps * weights).sum()                   
         
         self.log_dict({'mAP': mapscore})
@@ -138,15 +142,19 @@ class UIElementDetector(pl.LightningModule):
         metrics = metric_fn.value(iou_thresholds=0.5)
         
         print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
-        
+        print('weights:', weights)
+        print('test_weights:', self.hparams.test_weights)
         if self.hparams.test_weights is None:
+            print('no test_weights')
             mapscore = metrics['mAP']
         else:
             weights = np.array(self.hparams.test_weights)
+            print('test_weights yes!', weights)
             # weights = weights[1:]
          
             aps = np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]])  
-
+            
+            print('mapscore: aps->', aps, ', weights->', weights)
             mapscore = (aps * weights).sum()                   
         
         self.log_dict({'mAP': mapscore})
