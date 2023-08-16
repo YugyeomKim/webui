@@ -187,3 +187,4 @@ def download_model_gdown(model_name, model_key, model_path="checkpoints"):
 
 if __name__ == "__main__":
     download_model_gdown("screenrecognition", "screenrecognition-web350k-vins.ckpt")
+    download_metadata_gdown("screenrecognition")

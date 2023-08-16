@@ -32,7 +32,6 @@ if __name__ == "__main__":
     data = CustomDataModule()
 
     model = UIElementDetector.load_from_checkpoint('../../downloads/checkpoints/screenrecognition-web350k-vins.ckpt', val_weights=None, lr=0.01)
-    model.hparams.num_classes = FINETUNE_CLASSES
 
     mod = model.model.head.classification_head
     model.model.head.classification_head.cls_logits = torch.nn.Conv2d(mod.cls_logits.in_channels, mod.num_anchors * FINETUNE_CLASSES, kernel_size=3, stride=1, padding=1)
