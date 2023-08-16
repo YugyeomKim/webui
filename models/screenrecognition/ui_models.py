@@ -79,8 +79,7 @@ class UIElementDetector(pl.LightningModule):
             
         metrics = metric_fn.value(iou_thresholds=0.5)
         print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
-        print('weights:', weights)
-        print('test_weights:', self.hparams.test_weights)
+        print('test_weights:', self.hparams.val_weights)
 
         if self.hparams.val_weights is None:
             print('no test_weights')
@@ -142,7 +141,6 @@ class UIElementDetector(pl.LightningModule):
         metrics = metric_fn.value(iou_thresholds=0.5)
         
         print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
-        print('weights:', weights)
         print('test_weights:', self.hparams.test_weights)
         if self.hparams.test_weights is None:
             print('no test_weights')
