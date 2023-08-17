@@ -60,7 +60,7 @@ if __name__ == "__main__":
         logger=logger
     )
     
-    if os.path.exists(os.path.join(ARTIFACT_DIR, "last.ckpt")):
-        model = UIElementDetector.load_from_checkpoint(os.path.join(ARTIFACT_DIR, "last.ckpt"))
+    # if os.path.exists(os.path.join(ARTIFACT_DIR, "last.ckpt")):
+    #     model = UIElementDetector.load_from_checkpoint(os.path.join(ARTIFACT_DIR, "last.ckpt"))
 
     trainer.fit(model, data)
