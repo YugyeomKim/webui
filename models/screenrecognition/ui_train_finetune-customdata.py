@@ -53,7 +53,7 @@ if __name__ == "__main__":
         accelerator="gpu",
         devices='auto',
         gradient_clip_val=1.0,
-        accumulate_grad_batches=2,
+        # accumulate_grad_batches=2,
         callbacks=[checkpoint_callback, checkpoint_callback2, earlystopping_callback],
         min_epochs=10,
         max_epochs=-1,
