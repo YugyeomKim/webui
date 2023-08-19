@@ -55,16 +55,19 @@ class UIElementDetector(pl.LightningModule):
             
             gtsi = []
             target_len = targets[batch_i]['boxes'].shape[0]
-            print("target_len: " + str(target_len))
             for i in range(target_len):
                 target_box = targets[batch_i]['boxes'][i]
                 target_label = targets[batch_i]['labels'][i]
-                
+                print("target_box: " + str(target_box))
+                print("target_label: " + str(target_label))
                 if len(target_label.shape) == 1:
+                    print("here1")
                     for ci in range(target_label.shape[0]):
                         if target_label[ci] > 0:
+                            print("here2")
                             gtsi.append(torch.cat((target_box, torch.tensor([ci, 0, 0], device=target_box.device)), dim=-1))
                 else:
+                    print("here3")
                     gtsi.append(torch.cat((target_box, torch.tensor([target_label, 0, 0], device=target_box.device)), dim=-1))
             gts.append(torch.stack(gtsi) if len(gtsi) > 0 else torch.zeros(0, 7, device=self.device))
 
