@@ -75,7 +75,7 @@ class UIElementDetector(pl.LightningModule):
             for i in range(len(batch_output[0])):
                 print("=====================================")
                 print(f"\npreds:\n{batch_output[0][i]}")
-                print(f"\npreds:\n{batch_output[1][i]}")
+                print(f"\ngts:\n{batch_output[1][i]}")
                 print("=====================================")
                 metric_fn.add(batch_output[0][i].detach().cpu().numpy(), batch_output[1][i].detach().cpu().numpy())
             
