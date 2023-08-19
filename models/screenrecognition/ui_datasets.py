@@ -706,9 +706,6 @@ class CustomDataset(torch.utils.data.Dataset):
                 labelIdx = [self.label2Idx[label[li]] if label[li] in self.label2Idx else self.label2Idx['OTHER'] for li in range(len(label))]
                 labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
                 labels.append(labelHot)
-                print("label:", label)
-                print("labelIdx:", labelIdx)
-                print("labelHot:", labelHot)
 
             if len(boxes) > self.max_skip_boxes:
                 print("skipped due to too many objects", len(boxes))
@@ -726,8 +723,7 @@ class CustomDataset(torch.utils.data.Dataset):
             
             for k in target:
                 target[k] = target[k][:self.max_boxes]
-            print("img_shape:", img.shape)
-            print("scale:", scale)
+
             return img, target # return image and target dict
         except Exception as e:
             print("failed", idx, str(e))

@@ -58,16 +58,12 @@ class UIElementDetector(pl.LightningModule):
             for i in range(target_len):
                 target_box = targets[batch_i]['boxes'][i]
                 target_label = targets[batch_i]['labels'][i]
-                print("target_box: " + str(target_box))
-                print("target_label: " + str(target_label))
+
                 if len(target_label.shape) == 1:
-                    print("here1")
                     for ci in range(target_label.shape[0]):
                         if target_label[ci] > 0:
-                            print("here2")
                             gtsi.append(torch.cat((target_box, torch.tensor([ci, 0, 0], device=target_box.device)), dim=-1))
                 else:
-                    print("here3")
                     gtsi.append(torch.cat((target_box, torch.tensor([target_label, 0, 0], device=target_box.device)), dim=-1))
             gts.append(torch.stack(gtsi) if len(gtsi) > 0 else torch.zeros(0, 7, device=self.device))
 
@@ -81,8 +77,8 @@ class UIElementDetector(pl.LightningModule):
             
         # print(torch.cat([torch.stack(o[0]) for o in outputs], dim=0).shape, torch.cat([torch.stack(o[0]) for o in outputs], dim=0).sum())
             
-        metrics = metric_fn.value(iou_thresholds=0.1)
-        print(np.array([metrics[0.1][c]['ap'] for c in metrics[0.1]]))
+        metrics = metric_fn.value(iou_thresholds=0.5)
+        print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
 
         if self.hparams.val_weights is None:
             mapscore = metrics['mAP']
@@ -138,9 +134,9 @@ class UIElementDetector(pl.LightningModule):
             for i in range(len(batch_output[0])):
                 metric_fn.add(batch_output[0][i].detach().cpu().numpy(), batch_output[1][i].detach().cpu().numpy())
             
-        metrics = metric_fn.value(iou_thresholds=0.1)
+        metrics = metric_fn.value(iou_thresholds=0.5)
         
-        print(np.array([metrics[0.1][c]['ap'] for c in metrics[0.1]]))
+        print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
         
         if self.hparams.test_weights is None:
             mapscore = metrics['mAP']
