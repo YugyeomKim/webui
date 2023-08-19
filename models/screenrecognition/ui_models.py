@@ -138,7 +138,9 @@ class UIElementDetector(pl.LightningModule):
             
         metrics = metric_fn.value(iou_thresholds=0.5)
         
-        print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
+        # print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
+        for c in metrics[0.5]:
+            print(f"{c}: {metrics[0.5][c]['ap']}")
         
         if self.hparams.test_weights is None:
             mapscore = metrics['mAP']
