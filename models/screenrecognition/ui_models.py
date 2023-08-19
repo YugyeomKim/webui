@@ -73,6 +73,10 @@ class UIElementDetector(pl.LightningModule):
         metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=True, num_classes=self.hparams.num_classes)
         for batch_output in outputs:
             for i in range(len(batch_output[0])):
+                print("=====================================")
+                print(f"\npreds:\n{batch_output[0][i]}")
+                print(f"\npreds:\n{batch_output[0][i]}")
+                print("=====================================")
                 metric_fn.add(batch_output[0][i].detach().cpu().numpy(), batch_output[1][i].detach().cpu().numpy())
             
         # print(torch.cat([torch.stack(o[0]) for o in outputs], dim=0).shape, torch.cat([torch.stack(o[0]) for o in outputs], dim=0).sum())
@@ -132,6 +136,10 @@ class UIElementDetector(pl.LightningModule):
         metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=True, num_classes=self.hparams.num_classes)
         for batch_output in outputs:
             for i in range(len(batch_output[0])):
+                print("=====================================")
+                print(f"\npreds:\n{batch_output[0][i]}")
+                print(f"\npreds:\n{batch_output[0][i]}")
+                print("=====================================")
                 metric_fn.add(batch_output[0][i].detach().cpu().numpy(), batch_output[1][i].detach().cpu().numpy())
             
         metrics = metric_fn.value(iou_thresholds=0.1)
