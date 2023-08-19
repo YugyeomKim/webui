@@ -53,8 +53,8 @@ const classMap = {
     "1": "OTHER"
   },
   "label2Idx": {
-    "BACKGROUND": "0",
-    "OTHER": "1"
+    "BACKGROUND": 0,
+    "OTHER": 1
   }
 }
 
@@ -62,9 +62,8 @@ let i = 2
 for (const value of Object.values(classMapMerged)) {
   if (value === "OTHER") continue
   
-  const idx = i.toString()
-  classMap["idx2Label"][idx] = value
-  classMap["label2Idx"][value] = idx
+  classMap["idx2Label"][i.toString()] = value
+  classMap["label2Idx"][value] = i
   i++
 }
 
