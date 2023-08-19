@@ -703,7 +703,15 @@ class CustomDataset(torch.utils.data.Dataset):
                     continue
                 boxes.append(box)
                 label = key_dict['labels'][i]
-                labelIdx = [self.label2Idx[label[li]] if label[li] in self.label2Idx else self.label2Idx['OTHER'] for li in range(len(label))]
+                # labelIdx = [self.label2Idx[label[li]] if label[li] in self.label2Idx else self.label2Idx['OTHER'] for li in range(len(label))]
+                labelIdx = []
+                for li in range(len(label)):
+                    if label[li] in self.label2Idx:
+                        labelIdx.append(self.label2Idx[label[li]])
+                    else:
+                        labelIdx.append(self.label2Idx['OTHER'])
+                        print("label not found", label[li])
+                
                 labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
                 labels.append(labelHot)
 
