@@ -78,7 +78,9 @@ class UIElementDetector(pl.LightningModule):
         # print(torch.cat([torch.stack(o[0]) for o in outputs], dim=0).shape, torch.cat([torch.stack(o[0]) for o in outputs], dim=0).sum())
             
         metrics = metric_fn.value(iou_thresholds=0.5)
-        print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
+        # print(np.array([metrics[0.5][c]['ap'] for c in metrics[0.5]]))
+        for c in metrics[0.5]:
+            print(f"{c}: {metrics[0.5][c]['ap']}")
 
         if self.hparams.val_weights is None:
             mapscore = metrics['mAP']
