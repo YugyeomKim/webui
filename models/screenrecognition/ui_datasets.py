@@ -626,7 +626,7 @@ class WebUIDataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size)
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=20, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200):
+    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=20, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200, augment_p=0.3):
         super(CustomDataset, self).__init__()
         self.max_boxes = max_boxes
         self.max_skip_boxes = max_skip_boxes
@@ -654,6 +654,14 @@ class CustomDataset(torch.utils.data.Dataset):
         self.num_classes = max([int(k) for k in self.idx2Label.keys()]) + 1
         self.img_transforms = transforms.ToTensor()
         
+        self.grayscale_applier = transforms.RandomApply([transforms.Grayscale(num_output_channels=3)], p=augment_p)
+        self.color_jitter_applier = transforms.RandomApply([transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.5)], p=augment_p)
+        self.random_invert_applier = transforms.RandomApply([transforms.RandomInvert(p=1)], p=augment_p)
+        self.random_posterize_applier = transforms.RandomApply([transforms.RandomPosterize(bits=4, p=1)], p=augment_p)
+        self.random_solarize_applier = transforms.RandomApply([transforms.RandomSolarize(threshold=128, p=1)], p=augment_p)
+        self.random_adjust_sharpness_applier = transforms.RandomApply([transforms.RandomAdjustSharpness(sharpness_factor=2, p=1)], p=augment_p)
+        self.random_autocontrast_applier = transforms.RandomApply([transforms.RandomAutocontrast(p=1)], p=augment_p)
+        self.random_equalize_applier = transforms.RandomApply([transforms.RandomEqualize(p=1)], p=augment_p)
 
     def __len__(self):
         return len(self.keys)
@@ -673,7 +681,18 @@ class CustomDataset(torch.utils.data.Dataset):
             
             
             img_pil = Image.open(img_path).convert("RGB")
+            
+            # img_pil = self.grayscale_applier(img_pil)
+            img_pil = self.color_jitter_applier(img_pil)
+            img_pil = self.random_invert_applier(img_pil)
+            img_pil = self.random_posterize_applier(img_pil)
+            img_pil = self.random_solarize_applier(img_pil)
+            img_pil = self.random_adjust_sharpness_applier(img_pil)
+            img_pil = self.random_autocontrast_applier(img_pil)
+            img_pil = self.random_equalize_applier(img_pil)
+            
             img = self.img_transforms(img_pil)
+
             target = {}
             boxes = []
             labels = []
