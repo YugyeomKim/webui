@@ -1,7 +1,7 @@
 import json
 import os
 
-SPLIT_RATIO = (8, 1, 1)
+SPLIT_RATIO = (9, 1, 0)
 DATALIST_FILE = "../../downloads/ds/customdata.json"
 DESTINATION_DIR = "../../downloads"
 
