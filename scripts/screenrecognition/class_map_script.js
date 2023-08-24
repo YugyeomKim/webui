@@ -6,7 +6,7 @@ const PATH = "../../metadata/screenrecognition/custom_class_map.json"
 const highPriorityClasses = {
   statusBar: "STATUS_BAR",
   homeIndicator: "HOME_INDICATOR",
-  TextButton: "TEXT_BUTTON",
+  // TextButton: "TEXT_BUTTON",
   badge: "BADGE",
   keyboard: "KEYBOARD",
 }
@@ -18,10 +18,10 @@ const classes = {
   // rectangle: "RECTANGLE",
   // ellipse: "ELLIPSE",
   textField: "TEXT_FIELD",
-  searchField: "SEARCH_FIELD",
+  // searchField: "SEARCH_FIELD",
   filledButton: "FILLED_BUTTON",
   outlinedButton: "OUTLINED_BUTTON",
-  iconButton: "ICON_BUTTON",
+  // iconButton: "ICON_BUTTON",
   filledIconButton: "FILLED_ICON_BUTTON",
   outlinedIconButton: "OUTLINED_ICON_BUTTON",
   icon: "ICON",
