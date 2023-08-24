@@ -735,9 +735,9 @@ class CustomDataset(torch.utils.data.Dataset):
 
                     if label[li] in self.label2Idx:
                         labelIdx.append(self.label2Idx[label[li]])
-                    else:
+                    # else:
                         # labelIdx.append(self.label2Idx['OTHER'])
-                        print("label not found", label[li])
+                        # print("label not found", label[li])
                 
                 labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
                 labels.append(labelHot)
