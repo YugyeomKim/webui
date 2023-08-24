@@ -626,7 +626,7 @@ class WebUIDataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size)
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=20, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200, augment_p=0.2):
+    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=10, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200, augment_p=0.2):
         super(CustomDataset, self).__init__()
         self.max_boxes = max_boxes
         self.max_skip_boxes = max_skip_boxes
@@ -725,10 +725,18 @@ class CustomDataset(torch.utils.data.Dataset):
                 # labelIdx = [self.label2Idx[label[li]] if label[li] in self.label2Idx else self.label2Idx['OTHER'] for li in range(len(label))]
                 labelIdx = []
                 for li in range(len(label)):
+
+                    if label[li] == "TEXT_BUTTON":
+                        label[li] == "TEXT"
+                    elif label[li] == "ICON_BUTTON":
+                        label[li] == "ICON"
+                    if label[li] == "SEARCH_FIELD":
+                        label[li] == "TEXT_FIELD"
+
                     if label[li] in self.label2Idx:
                         labelIdx.append(self.label2Idx[label[li]])
                     else:
-                        labelIdx.append(self.label2Idx['OTHER'])
+                        # labelIdx.append(self.label2Idx['OTHER'])
                         print("label not found", label[li])
                 
                 labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
