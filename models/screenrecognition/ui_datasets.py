@@ -727,11 +727,11 @@ class CustomDataset(torch.utils.data.Dataset):
                 for li in range(len(label)):
 
                     if label[li] == "TEXT_BUTTON":
-                        label[li] == "TEXT"
+                        label[li] = "TEXT"
                     elif label[li] == "ICON_BUTTON":
-                        label[li] == "ICON"
+                        label[li] = "ICON"
                     if label[li] == "SEARCH_FIELD":
-                        label[li] == "TEXT_FIELD"
+                        label[li] = "TEXT_FIELD"
 
                     if label[li] in self.label2Idx:
                         labelIdx.append(self.label2Idx[label[li]])
