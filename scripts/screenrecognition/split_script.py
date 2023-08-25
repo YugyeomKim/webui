@@ -14,18 +14,22 @@ with open(DATALIST_PATH, "r") as f:
     datalist = json.load(f)
 
 data_num = len(datalist)
-# train_num = int(data_num * SPLIT_RATIO[0])
-# val_num = int(data_num * SPLIT_RATIO[1])
-# test_num = data_num - train_num - val_num
 
-train_split = []
+train_split = [data for data in datalist if data.startswith("t")]
 val_split = []
 test_split = []
-split_num = SPLIT_RATIO[0] + SPLIT_RATIO[1] + SPLIT_RATIO[2]
-for i in range(data_num):
-    if i % split_num < SPLIT_RATIO[0]:
+
+left_data = [data for data in datalist if not data.startswith("t")]
+left_num = len(left_data)
+train_ratio = int(SPLIT_RATIO[0] * (left_num / data_num))
+val_ratio = SPLIT_RATIO[1]
+test_ratio = SPLIT_RATIO[2]
+
+split_num = train_ratio + val_ratio + test_ratio
+for i in range(left_num):
+    if i % split_num < train_ratio:
         train_split.append(datalist[i])
-    elif i % split_num < SPLIT_RATIO[0] + SPLIT_RATIO[1]:
+    elif i % split_num < train_ratio + val_ratio:
         val_split.append(datalist[i])
     else:
         test_split.append(datalist[i])
