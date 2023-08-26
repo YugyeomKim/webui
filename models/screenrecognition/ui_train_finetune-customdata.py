@@ -1,6 +1,6 @@
 if __name__ == "__main__":
 
-    CHECK_INTERVAL_STEPS = 4000
+    CHECK_INTERVAL_STEPS = 1000
 
     ARTIFACT_DIR = "./checkpoints_screenrecognition_web350k-vins-customdata"
 
@@ -62,5 +62,7 @@ if __name__ == "__main__":
     
     # if os.path.exists(os.path.join(ARTIFACT_DIR, "last.ckpt")):
     #     model = UIElementDetector.load_from_checkpoint(os.path.join(ARTIFACT_DIR, "last.ckpt"))
+    if os.path.exists(os.path.join(ARTIFACT_DIR, "screenrecognition.ckpt")):
+        model = UIElementDetector.load_from_checkpoint(os.path.join(ARTIFACT_DIR, "screenrecognition.ckpt"))
 
     trainer.fit(model, data)
