@@ -765,7 +765,7 @@ class CustomDataset(torch.utils.data.Dataset):
             return self.__getitem__(idx + 1)
 
 class CustomDataModule(pl.LightningDataModule):
-    def __init__(self, train_split_file="../../downloads/train_split_custom.json", val_split_file="../../downloads/val_split_custom.json", test_split_file="../../downloads/test_split_custom.json", batch_size=8, num_workers=3):
+    def __init__(self, train_split_file="../../downloads/train_split_custom.json", val_split_file="../../downloads/val_split_custom.json", test_split_file="../../downloads/test_split_custom.json", batch_size=10, num_workers=3):
         super(CustomDataModule, self).__init__()
         self.batch_size = batch_size
         self.num_workers = num_workers
