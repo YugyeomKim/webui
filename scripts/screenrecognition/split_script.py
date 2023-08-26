@@ -15,6 +15,8 @@ with open(DATALIST_PATH, "r") as f:
 
 data_num = len(datalist)
 
+print("total: " + str(data_num))
+
 train_split = [data for data in datalist if data.startswith("t")]
 val_split = []
 test_split = []
