@@ -626,7 +626,7 @@ class WebUIDataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size)
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=10, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200, augment_p=0.2):
+    def __init__(self, split_file, boxes_dir='../../downloads/ds', rawdata_screenshots_dir='../../downloads/ds', class_map_file="../../metadata/screenrecognition/custom_class_map.json", min_area=10, device_scale=DEVICE_SCALE, max_boxes=200, max_skip_boxes=200, augment_p=0.1):
         super(CustomDataset, self).__init__()
         self.max_boxes = max_boxes
         self.max_skip_boxes = max_skip_boxes
