@@ -771,16 +771,16 @@ class CustomDataModule(pl.LightningDataModule):
         self.num_workers = num_workers
         self.train_dataset = CustomDataset(split_file = train_split_file)
         print("Hi! train_dataset length:", self.train_dataset.__len__())
-        self.val_dataset = CustomDataset(split_file = val_split_file)
+        self.val_dataset = CustomDataset(split_file = val_split_file, augment_p=0)
         print("Hi! val_dataset length:", self.val_dataset.__len__())
-        self.test_dataset = CustomDataset(split_file = test_split_file)
+        self.test_dataset = CustomDataset(split_file = test_split_file, augment_p=0)
         print("Hi! test_dataset length:", self.test_dataset.__len__())
 
     def train_dataloader(self):
         return torch.utils.data.DataLoader(self.train_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True)
 
     def val_dataloader(self):
-        return torch.utils.data.DataLoader(self.val_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True, augment_p=0) # shuffle so that we can eval on subset
+        return torch.utils.data.DataLoader(self.val_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, shuffle=True) # shuffle so that we can eval on subset
 
     def test_dataloader(self):
-        return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size, augment_p=0)
+        return torch.utils.data.DataLoader(self.test_dataset, collate_fn=collate_fn, num_workers=self.num_workers, batch_size=self.batch_size)
