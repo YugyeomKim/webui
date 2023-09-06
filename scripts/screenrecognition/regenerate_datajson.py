@@ -13,4 +13,6 @@ def write_to_json(data, filename):
 
 path = '../../downloads/ds'
 directories = get_directories(path)
+directories.sort()
+print(len(directories))
 write_to_json(directories, '../../downloads/ds/customdata.json')

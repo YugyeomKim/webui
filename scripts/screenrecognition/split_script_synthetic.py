@@ -21,11 +21,16 @@ train_split = []
 val_split = []
 test_split = []
 
+mcount = 0
 for data in datalist:
     if data.startswith("t"):
         train_split.append(data)
     elif data.startswith("m"):
-        val_split.append(data)
+        if (mcount < 400):
+            train_split.append(data)
+            mcount += 1
+        else:
+            val_split.append(data)
     else:
         test_split.append(data)
 
